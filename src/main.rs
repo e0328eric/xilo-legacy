@@ -55,8 +55,8 @@ fn main() -> error::Result<()> {
 
     let mut handler;
     for name in filenames {
-        let name = name.canonicalize()?;
         if name.is_dir() && !name.is_symlink() {
+            let name = name.canonicalize()?;
             handler = initializer.make_remover(FileTypeToRemove::Directory, name);
         } else {
             handler = initializer.make_remover(FileTypeToRemove::File, name);
