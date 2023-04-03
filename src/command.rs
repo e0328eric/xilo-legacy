@@ -17,4 +17,10 @@ pub struct XiloCommand {
     /// Empty the trashbin if FILES are empty. Otherwise, delete contents unrecoverably.
     #[arg(short, long)]
     pub permanent: bool,
+    /// Show the trashbin space
+    #[arg(short, long)]
+    pub show_space: bool,
+    /// Show the trashbin space with raw byte
+    #[arg(long)]
+    pub raw: bool,
 }

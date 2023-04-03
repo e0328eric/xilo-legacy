@@ -8,6 +8,9 @@ pub enum XiloError {
     #[error("{0}")]
     IOErr(#[from] io::Error),
 
+    #[error("{0}")]
+    FsExtraError(#[from] fs_extra::error::Error),
+
     #[error("initializing xilo failed. Detail: {0}")]
     XiloInitFailed(io::Error),
 
