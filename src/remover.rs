@@ -7,6 +7,7 @@ use base64ct::{Base64Url, Encoding};
 use sha2::{Digest, Sha256};
 
 use crate::error::{self, XiloError};
+use crate::terminal::{self, MessageType};
 
 #[repr(u8)]
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -51,10 +52,13 @@ impl<'p> Remover<'p> {
         }
 
         if self.permanent {
-            print!(
-                "Are you sure to remove {:?} permanently? (y/N): ",
-                self.name
-            );
+            terminal::print(
+                MessageType::Warning,
+                format!(
+                    "Are you sure to remove {} permanently? (y/N): ",
+                    self.name.display()
+                ),
+            )?;
             io::stdout().flush()?;
             let mut buf = String::new();
             io::stdin().read_line(&mut buf)?;
@@ -97,7 +101,10 @@ impl<'p> Remover<'p> {
         };
 
         if !self.force {
-            print!("Are you sure to remove {:?}? (y/N): ", self.name);
+            terminal::print(
+                MessageType::Warning,
+                format!("Are you sure to remove {}? (y/N): ", self.name.display()),
+            )?;
             io::stdout().flush()?;
             let mut buf = String::new();
             io::stdin().read_line(&mut buf)?;

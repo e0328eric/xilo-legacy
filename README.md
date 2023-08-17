@@ -1,1 +1,3 @@
-Use [this](https://github.com/e0328eric/xilo) instead.
+# xilo
+A simple replacement of "rm" command.
+The origin of this program name comes from the greek word `ξήλωμα` which means the word `rip` in English.

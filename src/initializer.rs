@@ -6,6 +6,7 @@ use crate::config::XiloConfig;
 use crate::error::{self, XiloError};
 use crate::remover::{FileTypeToRemove, Remover};
 use crate::space_shower::SpaceShower;
+use crate::terminal::{self, MessageType};
 
 pub struct Initializer {
     trashbin_path: PathBuf,
@@ -17,7 +18,14 @@ pub struct Initializer {
 
 impl Initializer {
     pub fn new(config: Option<XiloConfig>, reset_trashbin: bool) -> error::Result<Self> {
-        let default_trashbin_path = {
+        let default_trashbin_path = if cfg!(target_os = "macos") {
+            dirs::home_dir()
+                .map(|mut h| {
+                    h.push(".Trash");
+                    h
+                })
+                .ok_or(XiloError::CannotFindTrashbinPath)?
+        } else {
             let mut tmp = dirs::cache_dir().ok_or(XiloError::CannotFindCacheDirPath)?;
             tmp.push("xilo");
             tmp
@@ -38,7 +46,10 @@ impl Initializer {
         };
 
         if reset_trashbin {
-            print!("Are you sure to empty trashbin? (y/N): ");
+            terminal::print(
+                MessageType::Warning,
+                "Are you sure to empty trashbin? (y/N): ".to_string(),
+            )?;
             io::stdout().flush()?;
             let mut buf = String::new();
             io::stdin().read_line(&mut buf)?;
