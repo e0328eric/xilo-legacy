@@ -20,7 +20,7 @@ pub struct XiloCommand {
     /// Show the trashbin space
     #[arg(short, long)]
     pub show_space: bool,
-    /// Show the trashbin space with raw byte
+    /// Show the trashbin space with raw byte. Must use with `-s` flag
     #[arg(long)]
     pub raw: bool,
 }
