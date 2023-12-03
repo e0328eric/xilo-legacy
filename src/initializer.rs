@@ -25,6 +25,8 @@ impl Initializer {
                     h
                 })
                 .ok_or(XiloError::CannotFindTrashbinPath)?
+        } else if cfg!(target_os = "windows") {
+            PathBuf::from("C:/$Recycle.Bin")
         } else {
             let mut tmp = dirs::cache_dir().ok_or(XiloError::CannotFindCacheDirPath)?;
             tmp.push("xilo");
@@ -33,9 +35,12 @@ impl Initializer {
 
         let trashbin_path = if let Some(config) = config {
             if let Some(path) = config.trashbin_path {
-                if cfg!(unix) {
+                #[cfg(not(target_os = "windows"))]
+                {
                     expand_tilde(path).ok_or(XiloError::CannotFindTrashbinPath)?
-                } else {
+                }
+                #[cfg(target_os = "windows")]
+                {
                     path
                 }
             } else {
@@ -130,7 +135,7 @@ impl Initializer {
 }
 
 // NOTE: Code stolen from https://stackoverflow.com/questions/54267608/expand-tilde-in-rust-path-idiomatically
-#[cfg(unix)]
+#[cfg(not(target_os = "windows"))]
 fn expand_tilde<P: AsRef<Path>>(path_user_input: P) -> Option<PathBuf> {
     let p = path_user_input.as_ref();
     if !p.starts_with("~") {
